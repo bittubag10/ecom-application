@@ -1,43 +1,85 @@
-#spring.application.name=ecom-application
-#spring.h2.console.enabled=true
-#spring.datasource.url=jdbc:h2:mem:test
-#spring.jpa.show-sql=true
-#spring.jpa.hibernate.ddl-auto=create
-#management.endpoints.web.exposure.include=*
-#endpoint.health.show-details=always
-spring:
-  application:
-    name: ecom-application
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:test
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
+##spring.application.name=ecom-application
+##spring.h2.console.enabled=true
+##spring.datasource.url=jdbc:h2:mem:test
+##spring.jpa.show-sql=true
+##spring.jpa.hibernate.ddl-auto=create
+##management.endpoints.web.exposure.include=*
+##endpoint.health.show-details=always
+#spring:
+#  application:
+#    name: ecom-application
+#  datasource:
+#    url: jdbc:postgresql://db:5432/ecomdb
+#    username: bittu_bag
+#    password: sonu
+#    driver-class-name: org.postgresql.Driver
+#  jpa:
+#    database: POSTGRESQL
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+##  h2:
+##    console:
+##      enabled: true
+##  datasource:
+##    url: jdbc:h2:mem:test
+##  jpa:
+##    show-sql: true
+##    hibernate:
+##      ddl-auto: create
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  endpoint:
+#      health:
+#        show-details: always
+#      shutdown:
+#        enabled: true
+#
+#  info:
+#    env:
+#      enabled: true
+#
+#server:
+#  shutdown: graceful
+#
+#info:
+#  app:
+#    name: MyNewApp
+#    description: App built by us
+#    version: 1.0.0
+services:
+  # Humne service ka naam 'db' rakha hai kyunki teri yml mein url 'jdbc:postgresql://db:5432/ecomdb' hai
+  db:
+    image: postgres:latest
+    container_name: ecom-postgres-db
+    environment:
+      POSTGRES_USER: bittu_bag
+      POSTGRES_PASSWORD: sonu
+      POSTGRES_DB: ecomdb
+      PGTZ: UTC
+    ports:
+      - "5434:5432" # Pehla project 5433 par tha, isliye ise 5434 diya hai
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bittu_bag -d ecomdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-      health:
-        show-details: always
-      shutdown:
-        enabled: true
-
-  info:
-    env:
-      enabled: true
-
-server:
-  shutdown: graceful
-
-info:
   app:
-    name: MyNewApp
-    description: App built by us
-    version: 1.0.0
+    build: .
+    container_name: ecom-app-container
+    ports:
+      - "8081:8080" # Pehla project 8080 par tha, isliye ise 8081 diya hai
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ecomdb
+      - SPRING_DATASOURCE_USERNAME=bittu_bag
+      - SPRING_DATASOURCE_PASSWORD=sonu
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update

@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,61 +26,6 @@ public class OrderService {
     private final CartItemService cartItemService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
-//    public Optional<OrderResponse> createOrder(String userId) {
-//
-//        //validate for cart item
-//        List<CartItemResponse> cartItems=cartItemService.getCart(userId);
-//        if (cartItems.isEmpty()){
-//            return Optional.empty();
-//
-//        }
-//
-//        //validate for user
-//        Optional<User>userOptional=userRepository.findById(Long.valueOf(userId));
-//        if (userOptional.isEmpty()){
-//            return Optional.empty();
-//        }
-//        User user=userOptional.get();
-//
-//        //calculate total price
-//        BigDecimal totalPrice=cartItems.stream()
-//                .map(CartItem::getPrice)
-//                .reduce(BigDecimal.ZERO,BigDecimal::add);
-//
-//        //create order
-//
-//        Order order=new Order();
-//        order.setUser(user);
-//        order.setOrderStatus(OrderStatus.CONFIRMED);
-//        order.setTotalAmount(totalPrice);
-//        List<OrderItem>orderItems=cartItems.stream()
-//                .map(item->new OrderItem(
-//                        null,item.getProductName(),
-//                        item.getQuantity(),
-//                        item.getUnitPrice(),
-//                        order
-//                ))
-//                .toList();
-//        order.setItems(orderItems);
-//        Order savedOrder=orderRepository.save(order);
-//
-//        //clear the cart
-//
-//        CartItemService.cleareCart(userId);
-//
-//        return Optional.of(mapToOrderResponse(savedOrder));
-//    }
-//
-//    private OrderResponse mapToOrderResponse(Order order) {
-//        return new OrderResponse(
-//                order.getId(),
-//                order.getTotalAmount(),
-//                order.getOrderStatus(),
-//                order.getItems().stream()
-//
-//        );
-//    }
 
 
     @Transactional

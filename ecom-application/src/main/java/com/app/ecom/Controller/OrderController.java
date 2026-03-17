@@ -16,14 +16,6 @@ public class OrderController {
 
     private final OrderService orderService;
 
-//    @PostMapping
-//    public ResponseEntity<OrderResponse>createOrder(
-//            @RequestHeader("X-User-id")String userId){
-//        OrderResponse response=orderService.createOrder(userId);
-//
-//        return new ResponseEntity<OrderResponse>(response, HttpStatus.CREATED);
-//
-//    }
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@RequestHeader("X-User-id") String userId) {

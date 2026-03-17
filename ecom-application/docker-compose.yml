@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: ecom-postgres-db
+    environment:
+      POSTGRES_USER: bittu_bag
+      POSTGRES_PASSWORD: sonu
+      POSTGRES_DB: ecomdb
+      PGTZ: UTC
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bittu_bag -d ecomdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: ecom-app-container
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ecomdb
+      - SPRING_DATASOURCE_USERNAME=bittu_bag
+      - SPRING_DATASOURCE_PASSWORD=sonu
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
